@@ -42,7 +42,19 @@ ARROW_HEX  = PALETTE["maine_navy"]
 # =========================
 # Data (single Excel with skills + postings)
 # =========================
-data_path = "/Users/elinor.hunt/Desktop/EPSCoR/Dashboards/AI_Skill_Dashboard_Data.xlsx"  # <- update if needed
+from pathlib import Path
+import streamlit as st
+import pandas as pd
+
+APP_DIR = Path(__file__).parent
+data_path = APP_DIR / "AI_Skill_Dashboard_Data.xlsx"
+
+if not data_path.exists():
+    st.error(f"Data file not found at: {data_path}\nFiles in app dir: {[p.name for p in APP_DIR.iterdir()]}")
+    st.stop()
+
+df = pd.read_excel(data_path, engine="openpyxl")
+
 
 def _norm_series(s: pd.Series) -> pd.Series:
     return s.astype(str).str.strip().str.replace(r"\s+", " ", regex=True)
